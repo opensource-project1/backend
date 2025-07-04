@@ -13,3 +13,90 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int             @id @default(autoincrement())
+  email           String          @unique
+  password        String
+  name            String
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  // Relations
+  blockedSites    BlockedSite[]
+  focusSessions   FocusSession[]
+  accessLogs      AccessLog[]
+  emergencyRequests EmergencyRequest[]
+  todos           Todo[]
+  reports         Report[]
+  userSetting     UserSetting?
+}
+
+model BlockedSite {
+  id        Int      @id @default(autoincrement())
+  url       String
+  userId    Int
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model FocusSession {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  startTime DateTime
+  endTime   DateTime?
+  success   Boolean  @default(true)
+
+  user      User     @relation(fields: [userId], references: [id])
+  report    Report?
+}
+
+model AccessLog {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  url          String
+  accessedAt   DateTime @default(now())
+  blocked      Boolean
+
+  user         User     @relation(fields: [userId], references: [id])
+}
+
+model EmergencyRequest {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  reason      String
+  requestedAt DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+
+model Todo {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  content     String
+  completed   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+model UserSetting {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @unique
+  theme       String   @default("light")
+  timerOption Int      // 예: 기본 타이머 시간(분 단위)
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id])
+}
