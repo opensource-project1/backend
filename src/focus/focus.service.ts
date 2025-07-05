@@ -18,4 +18,22 @@ export class FocusService {
 
     return newFocus;
   }
+
+  async getFocusSessionsByDate(userId: number, date: string) {
+    const dayStart = new Date(date + 'T00:00:00.000Z');
+    const dayEnd = new Date(date + 'T23:59:59.999Z');
+
+    return this.prisma.focus.findMany({
+      where: {
+        userId,
+        startTime: {
+          gte: dayStart,
+          lte: dayEnd,
+        },
+      },
+      orderBy: {
+        startTime: 'asc',
+      },
+    });
+  }
 }

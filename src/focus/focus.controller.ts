@@ -1,4 +1,4 @@
-import { Controller, Post, Query, Body } from '@nestjs/common';
+import { Controller, Post, Query, Body, Get } from '@nestjs/common';
 import { FocusService } from './focus.service';
 import { CreateFocusDto } from './dtos/create-focus.dto';
 
@@ -17,5 +17,21 @@ export class FocusController {
     }
 
     return this.focusService.startFocus(parsedUserId, dto);
+  }
+
+  @Get()
+  async getFocusSessionsByDate(
+    @Query('userId') userId: string,
+    @Query('date') date: string,
+  ) {
+    const parsedUserId = Number(userId);
+    if (isNaN(parsedUserId)) {
+      throw new Error('Invalid userId');
+    }
+    if (!date) {
+      throw new Error('Date query parameter is required');
+    }
+
+    return this.focusService.getFocusSessionsByDate(parsedUserId, date);
   }
 }
