@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { BlockModule } from './block/block.module';
 import { MypageModule } from './mypage/mypage.module';
 import { EmergencyRequestsModule } from './emergency-requests/emergency-requests.module';
+import { TodoModule } from './todo/todo.module';
 import { FocusModule } from './focus/focus.module';
 
 @Module({
@@ -17,6 +18,7 @@ import { FocusModule } from './focus/focus.module';
     BlockModule,
     MypageModule,
     EmergencyRequestsModule,
+    TodoModule,
     FocusModule,
   ],
   controllers: [AppController],
