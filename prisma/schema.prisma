@@ -54,6 +54,7 @@ model Focus {
 model EmergencyRequest {
   id          Int      @id @default(autoincrement())
   userId      Int
+  focusId     Int
   reason      String
   requestedAt DateTime @default(now())
 
