@@ -4,25 +4,25 @@ import { CreateBlockDto } from './dtos/create-block.dto';
 
 @Controller('block')
 export class BlockController {
-    constructor(private readonly blockService: BlockService) {}
+  constructor(private readonly blockService: BlockService) {}
 
-    @Post()
-    create(@Body() dto: CreateBlockDto) {
+  @Post()
+  create(@Body() dto: CreateBlockDto) {
     return this.blockService.create(dto);
-    }
+  }
 
-    @Get()
-    findAll() {
+  @Get()
+  findAll() {
     return this.blockService.findAll();
-    }
+  }
 
-    @Get(':id')
-    findOne(@Param('id') id: string) {
+  @Get(':id')
+  findOne(@Param('id') id: string) {
     return this.blockService.findOne(+id);
-    }
+  }
 
-    @Delete(':id')
-    remove(@Param('id') id: string) {
+  @Delete(':id')
+  remove(@Param('id') id: string) {
     return this.blockService.remove(+id);
-    }
+  }
 }
