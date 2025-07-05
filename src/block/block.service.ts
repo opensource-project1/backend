@@ -7,24 +7,22 @@ export class BlockService {
     constructor(private prisma: PrismaService) {}
 
     async create(dto: CreateBlockDto) {
-    return this.prisma.blockedSite.create({ data: {
+    return this.prisma.block.create({ data: {
         userId: dto.userId,
         url: dto.url,
-        startTime: new Date(dto.startTime),
-        endTime: new Date(dto.endTime),
     },
     });
     }
 
     async findAll() {
-    return this.prisma.blockedSite.findMany();
+    return this.prisma.block.findMany();
     }
 
     async findOne(id: number) {
-    return this.prisma.blockedSite.findUnique({ where: { id } });
+    return this.prisma.block.findUnique({ where: { id } });
     }
 
     async remove(id: number) {
-    return this.prisma.blockedSite.delete({ where: { id } });
+    return this.prisma.block.delete({ where: { id } });
     }
 }
