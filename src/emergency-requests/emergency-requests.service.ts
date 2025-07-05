@@ -18,4 +18,10 @@ export class EmergencyRequestsService {
 
     return newRequest;
   }
+  async getMyRequests(userId: number) {
+    return this.prisma.emergencyRequest.findMany({
+      where: { userId },
+      orderBy: { requestedAt: 'desc' },
+    });
+  }
 }
