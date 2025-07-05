@@ -4,6 +4,6 @@ import { FocusService } from './focus.service';
 
 @Module({
   controllers: [FocusController],
-  providers: [FocusService]
+  providers: [FocusService],
 })
 export class FocusModule {}
