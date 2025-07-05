@@ -94,4 +94,9 @@ model FocusLog {
 
   @@unique([userId, date])
 }
+enum FocusStatus {
+  ONGOING
+  COMPLETED
+  CANCELED
+}
 
