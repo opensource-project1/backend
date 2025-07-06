@@ -2,22 +2,22 @@ import {
   Controller,
   Post,
   Body,
-  Query,
   Get,
   UseGuards,
+  Req,
   BadRequestException,
 } from '@nestjs/common';
 import { EmergencyRequestsService } from './emergency-requests.service';
 import { CreateEmergencyRequestDto } from './dtos/create-emergency-request.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 import {
   ApiTags,
   ApiOperation,
-  ApiQuery,
   ApiResponse,
   ApiBearerAuth,
+  ApiBody,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('Emergency Requests')
 @ApiBearerAuth()
@@ -28,42 +28,26 @@ export class EmergencyRequestsController {
 
   @Post()
   @ApiOperation({ summary: '긴급 요청 생성' })
-  @ApiQuery({
-    name: 'userId',
-    type: Number,
-    description: '사용자 ID',
-    required: true,
-  })
   @ApiResponse({ status: 201, description: '긴급 요청 생성 성공' })
-  @ApiResponse({ status: 400, description: '유효하지 않은 userId' })
-  async create(
-    @Query('userId') userId: string,
-    @Body() dto: CreateEmergencyRequestDto,
-  ) {
-    const parsedUserId = Number(userId);
-    if (isNaN(parsedUserId)) {
-      throw new BadRequestException('Invalid userId');
+  @ApiBody({ type: CreateEmergencyRequestDto })
+  async create(@Req() req, @Body() dto: CreateEmergencyRequestDto) {
+    const userId = req.user.userId;
+    if (!userId) {
+      throw new BadRequestException('User ID not found');
     }
 
-    return this.service.createEmergencyRequest(parsedUserId, dto);
+    return this.service.createEmergencyRequest(userId, dto);
   }
 
   @Get()
   @ApiOperation({ summary: '내 긴급 요청 목록 조회' })
-  @ApiQuery({
-    name: 'userId',
-    type: Number,
-    description: '사용자 ID',
-    required: true,
-  })
   @ApiResponse({ status: 200, description: '긴급 요청 목록 조회 성공' })
-  @ApiResponse({ status: 400, description: '유효하지 않은 userId' })
-  async getMyRequests(@Query('userId') userId: string) {
-    const parsedUserId = Number(userId);
-    if (isNaN(parsedUserId)) {
-      throw new BadRequestException('Invalid userId');
+  async getMyRequests(@Req() req) {
+    const userId = req.user.userId;
+    if (!userId) {
+      throw new BadRequestException('User ID not found');
     }
 
-    return this.service.getMyRequests(parsedUserId);
+    return this.service.getMyRequests(userId);
   }
 }

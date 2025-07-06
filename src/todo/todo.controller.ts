@@ -5,7 +5,9 @@ import {
   Param,
   Delete,
   Body,
+  Req,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -28,30 +30,46 @@ export class TodoController {
   @Post()
   @ApiOperation({ summary: '할 일 생성' })
   @ApiResponse({ status: 201, description: '할 일 생성 성공' })
-  create(@Body() dto: CreateTodoDto) {
-    return this.todoService.create(dto);
+  async create(@Req() req, @Body() dto: CreateTodoDto) {
+    const userId = req.user.userId;
+    if (!userId) {
+      throw new BadRequestException('User ID not found');
+    }
+    return this.todoService.create(userId, dto);
   }
 
   @Get()
-  @ApiOperation({ summary: '전체 할 일 조회' })
-  @ApiResponse({ status: 200, description: '모든 할 일 반환' })
-  findAll() {
-    return this.todoService.findAll();
+  @ApiOperation({ summary: '내 할 일 전체 조회' })
+  @ApiResponse({ status: 200, description: '내 할 일 목록 반환' })
+  async findAll(@Req() req) {
+    const userId = req.user.userId;
+    if (!userId) {
+      throw new BadRequestException('User ID not found');
+    }
+    return this.todoService.findAll(userId);
   }
 
   @Get(':id')
   @ApiOperation({ summary: '특정 할 일 조회' })
   @ApiParam({ name: 'id', description: '할 일 ID' })
   @ApiResponse({ status: 200, description: '해당 ID의 할 일 반환' })
-  findOne(@Param('id') id: string) {
-    return this.todoService.findOne(+id);
+  async findOne(@Req() req, @Param('id') id: string) {
+    const userId = req.user.userId;
+    if (!userId) {
+      throw new BadRequestException('User ID not found');
+    }
+    return this.todoService.findOne(userId, +id);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: '할 일 삭제' })
   @ApiParam({ name: 'id', description: '삭제할 할 일 ID' })
   @ApiResponse({ status: 200, description: '삭제 완료' })
-  remove(@Param('id') id: string) {
-    return this.todoService.remove(+id);
+  async remove(@Req() req, @Param('id') id: string) {
+    const userId = req.user.userId;
+    if (!userId) {
+      throw new BadRequestException('User ID not found');
+    }
+    return this.todoService.remove(userId, +id);
   }
 }

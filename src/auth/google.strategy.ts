@@ -1,19 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, VerifyCallback, Profile } from 'passport-google-oauth20';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
-  constructor() {
-    console.log('✅ GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID);
-    console.log('✅ GOOGLE_CALLBACK_URL:', process.env.GOOGLE_CALLBACK_URL);
+  constructor(private readonly prisma: PrismaService) {
     super({
       clientID: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       callbackURL: process.env.GOOGLE_CALLBACK_URL!,
       scope: ['email', 'profile'],
     });
-    console.log('GoogleStrategy callbackURL:', process.env.GOOGLE_CALLBACK_URL);
   }
 
   async validate(
@@ -22,14 +20,22 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     profile: Profile,
     done: VerifyCallback,
   ): Promise<void> {
-    const { name, emails, photos } = profile;
+    const { id, name, emails } = profile;
 
-    const user = {
-      email: emails?.[0].value,
-      name: name?.givenName,
-      picture: photos?.[0].value,
-      accessToken,
-    };
+    let user = await this.prisma.user.findUnique({
+      where: { googleId: id },
+    });
+
+    if (!user) {
+      user = await this.prisma.user.create({
+        data: {
+          googleId: id,
+          email: emails?.[0].value ?? '',
+          name: name?.givenName ?? '',
+          password: '',
+        },
+      });
+    }
 
     done(null, user);
   }
