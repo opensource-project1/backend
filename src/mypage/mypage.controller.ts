@@ -1,11 +1,26 @@
-import { Controller, Get, Query, BadRequestException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  BadRequestException,
+  UseGuards,
+} from '@nestjs/common';
 import { MypageService } from './mypage.service';
 import { MyPageResponseDto } from './dtos/response.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
-import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 
 @ApiTags('My Page')
-@Controller('api/my-page')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
+@Controller('my-page')
 export class MypageController {
   constructor(private readonly mypageService: MypageService) {}
 

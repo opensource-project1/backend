@@ -4,15 +4,25 @@ import {
   Body,
   Query,
   Get,
+  UseGuards,
   BadRequestException,
 } from '@nestjs/common';
 import { EmergencyRequestsService } from './emergency-requests.service';
 import { CreateEmergencyRequestDto } from './dtos/create-emergency-request.dto';
 
-import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('Emergency Requests')
-@Controller('api/emergencyRequests')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
+@Controller('emergencyRequests')
 export class EmergencyRequestsController {
   constructor(private readonly service: EmergencyRequestsService) {}
 

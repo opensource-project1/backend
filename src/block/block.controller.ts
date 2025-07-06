@@ -5,6 +5,7 @@ import {
   Param,
   Delete,
   Body,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -15,9 +16,11 @@ import {
 } from '@nestjs/swagger';
 import { BlockService } from './block.service';
 import { CreateBlockDto } from './dtos/create-block.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
-@ApiTags('Block') // Swagger UI에서 이 컨트롤러는 "Block" 그룹으로 표시됨
-@ApiBearerAuth('access-token') // JWT 토큰 입력을 요구함
+@ApiTags('Block')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('block')
 export class BlockController {
   constructor(private readonly blockService: BlockService) {}
