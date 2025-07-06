@@ -10,13 +10,6 @@ export class CreateTodoDto {
   content: string;
 
   @ApiProperty({
-    example: 1,
-    description: '할 일을 등록한 사용자 ID',
-  })
-  @IsInt()
-  userId: number;
-
-  @ApiProperty({
     example: false,
     description: '할 일 완료 여부 (true: 완료, false: 미완료)',
   })

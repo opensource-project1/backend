@@ -1,10 +1,11 @@
 import {
   Controller,
   Post,
-  Query,
   Body,
   Get,
+  Req,
   BadRequestException,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { FocusService } from './focus.service';
@@ -13,9 +14,10 @@ import { CreateFocusDto } from './dtos/create-focus.dto';
 import {
   ApiTags,
   ApiOperation,
-  ApiQuery,
   ApiResponse,
   ApiBearerAuth,
+  ApiQuery,
+  ApiBody,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
@@ -28,34 +30,19 @@ export class FocusController {
 
   @Post()
   @ApiOperation({ summary: '집중 세션 시작' })
-  @ApiQuery({
-    name: 'userId',
-    type: Number,
-    description: '사용자 ID',
-    required: true,
-  })
   @ApiResponse({ status: 201, description: '집중 세션 시작 성공' })
-  @ApiResponse({ status: 400, description: '유효하지 않은 userId' })
-  async startFocus(
-    @Query('userId') userId: string,
-    @Body() dto: CreateFocusDto,
-  ) {
-    const parsedUserId = Number(userId);
-    if (isNaN(parsedUserId)) {
-      throw new BadRequestException('Invalid userId');
+  @ApiBody({ type: CreateFocusDto })
+  async startFocus(@Req() req, @Body() dto: CreateFocusDto) {
+    const userId = req.user.userId;
+    if (!userId) {
+      throw new BadRequestException('User ID not found');
     }
 
-    return this.focusService.startFocus(parsedUserId, dto);
+    return this.focusService.startFocus(userId, dto);
   }
 
   @Get()
   @ApiOperation({ summary: '날짜별 집중 세션 조회' })
-  @ApiQuery({
-    name: 'userId',
-    type: Number,
-    description: '사용자 ID',
-    required: true,
-  })
   @ApiQuery({
     name: 'date',
     type: String,
@@ -64,18 +51,15 @@ export class FocusController {
   })
   @ApiResponse({ status: 200, description: '조회 성공' })
   @ApiResponse({ status: 400, description: '잘못된 요청' })
-  async getFocusSessionsByDate(
-    @Query('userId') userId: string,
-    @Query('date') date: string,
-  ) {
-    const parsedUserId = Number(userId);
-    if (isNaN(parsedUserId)) {
-      throw new BadRequestException('Invalid userId');
+  async getFocusSessionsByDate(@Req() req, @Query('date') date: string) {
+    const userId = req.user.userId;
+    if (!userId) {
+      throw new BadRequestException('User ID not found');
     }
     if (!date) {
       throw new BadRequestException('Date query parameter is required');
     }
 
-    return this.focusService.getFocusSessionsByDate(parsedUserId, date);
+    return this.focusService.getFocusSessionsByDate(userId, date);
   }
 }

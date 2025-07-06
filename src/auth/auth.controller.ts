@@ -24,7 +24,14 @@ export class AuthController {
   async googleAuthRedirect(@Req() req, @Res() res) {
     const user = req.user;
 
-    const payload = { email: user.email, name: user.name };
+    // user 객체에 고유 id가 있다고 가정 (보통 user.id 혹은 user.sub)
+    // 실제 user 객체 구조에 맞게 고유 ID 필드명을 맞춰야 합니다.
+    const userId = user.id || user.sub;
+    if (!userId) {
+      return res.status(400).send('User ID not found in Google profile');
+    }
+
+    const payload = { sub: userId, email: user.email, name: user.name };
     const token = this.jwtService.sign(payload);
 
     res.redirect(`${process.env.FRONTEND_URL}/login/success?token=${token}`);

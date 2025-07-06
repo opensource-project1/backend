@@ -8,11 +8,4 @@ export class CreateBlockDto {
   })
   @IsString()
   url: string;
-
-  @ApiProperty({
-    example: 1,
-    description: '차단을 등록한 사용자 ID',
-  })
-  @IsInt()
-  userId: number;
 }
