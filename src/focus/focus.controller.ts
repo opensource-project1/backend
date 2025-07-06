@@ -20,9 +20,9 @@ import {
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('Focus')
-@ApiBearerAuth('access-token')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('api/focus')
+@Controller('focus')
 export class FocusController {
   constructor(private readonly focusService: FocusService) {}
 

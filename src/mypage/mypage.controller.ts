@@ -18,9 +18,9 @@ import {
 } from '@nestjs/swagger';
 
 @ApiTags('My Page')
-@ApiBearerAuth('access-token')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('api/my-page')
+@Controller('my-page')
 export class MypageController {
   constructor(private readonly mypageService: MypageService) {}
 

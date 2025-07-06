@@ -20,9 +20,9 @@ import {
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('Emergency Requests')
-@ApiBearerAuth('access-token')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('api/emergencyRequests')
+@Controller('emergencyRequests')
 export class EmergencyRequestsController {
   constructor(private readonly service: EmergencyRequestsService) {}
 

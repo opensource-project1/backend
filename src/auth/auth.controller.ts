@@ -1,18 +1,25 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Req,
+  Res,
+  UseGuards,
+  Post,
+  Body,
+} from '@nestjs/common';
+import { ApiBody } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtService } from '@nestjs/jwt';
 
-@Controller('api/auth')
+@Controller('auth')
 export class AuthController {
   constructor(private jwtService: JwtService) {}
 
-  @Get('google')
+  @Get('/google/login')
   @UseGuards(AuthGuard('google'))
-  async googleAuth() {
-    // 구글 로그인 페이지로 리디렉션
-  }
+  async googleAuth() {}
 
-  @Get('google/redirect')
+  @Get('/google/redirect')
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(@Req() req, @Res() res) {
     const user = req.user;
@@ -20,7 +27,6 @@ export class AuthController {
     const payload = { email: user.email, name: user.name };
     const token = this.jwtService.sign(payload);
 
-    // 프론트로 JWT 토큰 전달 (redirect)
     res.redirect(`${process.env.FRONTEND_URL}/login/success?token=${token}`);
   }
 
@@ -28,5 +34,21 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   getProfile(@Req() req) {
     return req.user;
+  }
+
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        userId: { type: 'string', example: 'test123' },
+        email: { type: 'string', example: 'test@example.com' },
+      },
+    },
+  })
+  @Post('test-token')
+  getTestToken(@Body() body: { userId: string; email: string }) {
+    const payload = { sub: body.userId, email: body.email };
+    const token = this.jwtService.sign(payload);
+    return { accessToken: token };
   }
 }

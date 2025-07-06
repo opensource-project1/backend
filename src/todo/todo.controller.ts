@@ -19,7 +19,7 @@ import { CreateTodoDto } from './dtos/create-todo.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('Todo')
-@ApiBearerAuth('access-token')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller('todo')
 export class TodoController {

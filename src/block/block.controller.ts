@@ -19,7 +19,7 @@ import { CreateBlockDto } from './dtos/create-block.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('Block')
-@ApiBearerAuth('access-token')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller('block')
 export class BlockController {
