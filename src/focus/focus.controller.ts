@@ -5,13 +5,23 @@ import {
   Body,
   Get,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { FocusService } from './focus.service';
 import { CreateFocusDto } from './dtos/create-focus.dto';
 
-import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('Focus')
+@ApiBearerAuth('access-token')
+@UseGuards(JwtAuthGuard)
 @Controller('api/focus')
 export class FocusController {
   constructor(private readonly focusService: FocusService) {}
