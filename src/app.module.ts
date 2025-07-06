@@ -8,6 +8,7 @@ import { MypageModule } from './mypage/mypage.module';
 import { EmergencyRequestsModule } from './emergency-requests/emergency-requests.module';
 import { TodoModule } from './todo/todo.module';
 import { FocusModule } from './focus/focus.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { FocusModule } from './focus/focus.module';
     EmergencyRequestsModule,
     TodoModule,
     FocusModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
