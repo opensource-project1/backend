@@ -33,6 +33,9 @@ export class MypageService {
     const blockedUrls: BlockedUrlDto[] = plainToInstance(
       BlockedUrlDto,
       blocksRaw,
+      {
+        enableImplicitConversion: true,
+      },
     );
 
     const focusSessionsRaw = await this.prisma.focus.findMany({
